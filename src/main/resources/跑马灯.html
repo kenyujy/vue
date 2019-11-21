@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+
+</head>
+<body>
+<div id="app">
+    <button v-on:click="lang">浪起来</button> <!-- v-on 触发事件-->
+    <button v-on:click="stop">低调，别浪</button>
+    <h3>{{message}}</h3>
+</div>
+
+<script type="text/javascript" src="js/vue.js" ></script>
+<script type="text/javascript">
+    new Vue({
+        el: '#app',
+        data: {
+            message: '猥琐发育，别浪',
+            intervalId:null  //定义定时器Id
+        },
+        methods:{
+            lang (){
+                if (this.intervalId != null) {return}  //判断定时器是否已经开启，是则直接返回不启动
+                this.intervalId=setInterval(()=> {  //定时器setInterval
+                    //console.log(this.message); //vm中实例调用 数据和方法通过 this.
+                    let start = this.message.substr(0, 1);
+                    let end = this.message.substr(1); //1开始截取到最后
+                    this.message = end + start;
+                },400)
+            },
+            stop(){
+                clearInterval(this.intervalId);
+                this.intervalId=null  //每当停止定时器，把intervalId重置为 null
+            }
+        }
+    })  //vm实例会监听数据的改变，并同步到页面上
+</script>
+</body>
+</html>

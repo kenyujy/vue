@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+<link rel="stylesheet" href="../css/bootstrap.css">
+<script type="text/javascript" src="../js/vue.js" ></script>
+<script type="text/javascript" src="../js/vue-resource.js" ></script>
+<head>
+<meta charset="UTF-8">
+    <title>Title</title>
+    <style>
+
+        tr:hover{
+            background-color: #c0c0c0 !important;
+            transition: all 0.8s ease;
+        }
+
+        .v-enter,                       /* 定义动画效果 */
+        .v-leave-to{
+            opacity: 0;
+            transform: translateX(2000px);  /* 进入前，退出后的动画效果 */
+        }
+
+        .v-enter-active,
+        .v-leave-active{
+            transition: all 1s ease;  /* 进入时，退出时的动画效果，过渡时间间隔 */
+        }
+    </style>
+</head>
+<body>
+<div id="app">
+
+    <div class="panel panel-primary">
+        <div class="panel-heading">
+            <h3 class="panel-title">导航栏</h3>
+        </div>
+        <div class="panel-body form-inline">  <!-- form-inline 元素在一行显示 -->
+            <label>id
+                <input type="text" class="form-control" v-model="id">
+            </label>
+            <label>name
+                <input type="text" class="form-control" v-model="name">
+            </label>
+            <!-- vue中使用事件绑定机制，method()括号内可以传参数 -->
+            <input type="button" value="add" class="btn btn-primary" v-on:click="add()">
+            <!-- 调用getAllList() 获取服务器数据 -->
+            <input type="button" value="获取数据" class="btn btn-primary" v-on:click="getAllList()">
+
+            <label>名字搜索
+                <input type="text" class="form-control" v-model="name_keywords"> <!-- v-model 绑定不同 keywords -->
+            </label>
+
+            <label>部门搜索
+                <input type="text" class="form-control" v-model="dept_keywords"> <!-- v-model 绑定不同 keywords -->
+            </label>
+
+            <label>email搜索
+                <input type="text" class="form-control" v-model="email_keywords"> <!-- v-model 绑定不同 keywords -->
+            </label>
+        </div>
+    </div>
+
+
+    <table class="table table-bordered table-hover table-striped">
+        <thead>
+            <tr>
+                <th>id</th>
+                <th>name</th>
+                <th>salary</th>
+                <th>dept</th>
+                <th>email</th>
+                <th>phone</th>
+                <th>option</th>
+            </tr>
+        </thead>
+        <tbody>
+            <transition-group appear>    <!-- Vue 提供的 transition-group, appear是入场效果！-->
+            <tr v-for="item in search()" v-bind:key="item.id">
+                <td>{{item.id}}</td>
+                <td>{{item.name}}</td>
+                <td>{{item.salary}}</td>
+                <td>{{item.dept}}</td>
+                <td>{{item.email}}</td>
+                <td>{{item.phone}}</td>
+                <td><a href="" v-on:click="del(item.id)">删除</a></td>
+            </tr>
+            </transition-group>   <!-- Vue 提供的 transition-group -->
+        </tbody>
+    </table>
+
+</div>
+
+<footer >
+    <span >Copyright © 2019 Ken Yu  all rights reserved
+    </span>
+</footer>
+<script type="text/javascript">
+
+    new Vue({
+        el: '#app',
+        data: {
+            id:'',
+            name:'',
+            salary:'',
+            dept:'',
+            email:'',
+            phone:'',
+            name_keywords:'',
+            dept_keywords:'',
+            email_keywords:'',
+
+            list: []
+        },
+
+        created(){  //生命周期函数
+            //this.getAllList();   //调用函数从web 服务器 通过数据库 获取列表数据
+        },
+
+        methods:{
+            addcar(){
+                let car={id:this.id, name:this.name, create_time: new Date()};
+                this.list.push(car);
+                this.id=this.name='';
+            },
+
+            search(){
+                let newList= [];
+                // 第一个keyword 搜索
+                this.list.forEach(item=>{
+                    if (item.name.includes(this.name_keywords) && item.dept.includes(this.dept_keywords) && item.email.includes(this.email_keywords)) {
+                        newList.push(item);
+                    }
+                });
+
+                return newList;
+            },
+
+            getAllList(){  //获取所有 employee 列表的JSON
+            // 通过 vue-resource 的 this.$http 发起获取请求
+                this.$http.get('http://localhost:8080/listall').then(result => {
+                    //通过 this.$http 获取的数据都在 result.body 里面
+                    //console.log(result.status);
+                    //console.log(result);
+                    if (result.status ==200){
+                        this.list= result.body;  //把 result.body 赋值给list
+                    }else{
+                        alert('获取数据失败');
+                    }
+                })
+            },
+
+            add(){
+                // 通过 $http.post() 发送添加 到服务器
+                // this.$http.post() 接受3个参数
+                // 第一个请求的url 地址
+                // 第二个， 要提交到服务器的数据，以对象的形式提交
+                // 第三个， 配置对象，要以哪种表单数据提交 ( emulateJSON, true ) 以普通表单数据格式提交
+                // 使用 then() 设置成功的回调函数， 需要使用 result.body
+                this.$http.post('http://localhost:8080/add_emp', {name: this.name, dept:this.dept, email: this.email},{emulateJSON: true}).then(result =>{
+                    if (result.status == 0){
+                        this.getAllList();
+                        this.name='';  //清空数据
+                        this.dept='';
+                        this.email='';
+                    } else{
+                        alert('数据提交失败');
+                    }
+                })
+            },
+
+            del(id){
+                this.$http.get('http://localhost:8080/del_emp'+id).then(result =>{
+                    if (result.status ==0){
+                        this.getAllList();
+                    }else{
+                        alert('数据删除失败');
+                    }
+                })
+            }
+        }
+    })
+</script>
+
+</body>
+</html>

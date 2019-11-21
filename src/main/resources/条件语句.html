@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<div id="app">
+    <h2>v-if</h2>
+    <h1 v-if="awesome">Vue is awesome</h1>
+    <h1 v-else>oh no </h1> <!-- 接着上一行的判断 即if then else then -->
+
+    <h2>template</h2>
+    <template v-if="ok"> <!-- block style="display:none" -->
+        <h2>Title</h2>
+        <p>Paragraph 1</p>
+        <p>Paragraph 2</p>
+    </template>
+    <!-- 随机 显示-->
+    <div v-if="Math.random()>0.5">
+        now you see me
+    </div>
+    <div v-else>
+        now you don't
+    </div>
+    <br/>
+
+    <!-- V-else-if -->
+    <div v-if="type=='A'">
+        A
+    </div>
+    <div v-else-if="type=='B'">
+        B
+    </div>
+    <div v-else-if="type=='C'">
+        C
+    </div>
+    <div v-else>
+        Not A/B/C
+    </div>
+    <br/>
+    <h2>管理元素复用</h2>
+    <template v-if="logintype=='username'">
+        <label>Username</label>
+        <input placeholder="Enter your username"/>
+    </template>
+    <template v-else>
+        <label>Email</label>
+        <input placeholder="Enter your Email"/>
+    </template>
+    <br/>
+    <button v-on:click="toggle()">toggle</button>
+</div>
+
+<script type="text/javascript" src="js/vue.js" ></script>
+<script type="text/javascript">
+    let vm= new Vue({  // MVVM模型中的 VM
+        el: '#app',
+        data: {
+            awesome:false,
+            ok:true,
+            type:'C',
+            logintype:'username'
+        },
+        methods:{
+            toggle(){
+                this.logintype=(this.logintype=='username'?'email':'username')
+            }
+        }
+    })
+</script>
+</body>
+</html>

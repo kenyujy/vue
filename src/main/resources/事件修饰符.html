@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+
+</head>
+<body>
+<div id="app">
+    <div v-on:click.self="divHandler">  <!-- .self修饰符只触发点击本身的事件--> <!-- .once 只触发一次 -->
+        <input type="button" value="click" v-on:click.stop="btnHandler"> <!-- stop阻止事件触发 外冒 -->
+    </div>
+
+    <a href="http://www.baidu.com" v-on:click.prevent="linkClick">百度</a> <!-- prevent修饰符阻止默认行为 -->
+</div>
+
+<script type="text/javascript" src="js/vue.js" ></script>
+<script type="text/javascript">
+    new Vue({
+        el: '#app',
+        data: {
+
+        },
+        methods:{
+            divHandler(){
+                console.log("触发div事件")
+            },
+            btnHandler(){
+                console.log("触发btn事件")
+            },
+            linkClick(){
+               console.log("跳转百度")
+            }
+
+        }
+    })
+</script>
+</body>
+</html>

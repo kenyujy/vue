@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+
+</head>
+<body>
+<div id="app">
+    <h2>插值</h2>
+    <input type="text" v-model="message">
+    <p> {{message}}</p>
+    <p v-once> {{message}}</p> <!--这是一行注释 v-once只运行一次-->
+    <p v-html="message"></p> <!-- v-html 解释html tag-->
+
+    <h2>数据绑定</h2>
+    <div id="dynamicId">1</div>
+    <div v-bind:id="dynamicId">2</div> <!-- v-bind 用于绑定属性 动态绑定Id-->
+    <button v-bind:disabled="isButtonDisabled">确定</button> <!-- v-bind 动态绑定-->
+
+    <h2>js表达式</h2>
+    {{number+1}}
+    <br/>
+    {{ok?"yes":"no"}}
+    <br/>
+    {{info.split(" ").reverse().join(",").toUpperCase()}}
+    <br/>
+    <!-- v-bind 动态绑定url-->
+    <a v-bind:href="url">试试bing</a>
+    <br/>
+    <button v-on:click="doSomeThing">按钮1</button>
+
+</div>
+<script type="text/javascript" src="js/vue.js" ></script>
+<script type="text/javascript">
+    new Vue({
+        el: '#app',
+        data: {
+            message: '<font color="red">一定成功</font>',
+            dynamicId:3,
+            isButtonDisabled:true,
+            number:1,
+            ok:true,
+            info:'a b c',
+            url:"http://www.bing.com"
+        },
+        methods:{
+            doSomeThing:function (){
+                alert('点我干嘛')
+            }
+        }
+    })
+</script>
+</body>
+</html>

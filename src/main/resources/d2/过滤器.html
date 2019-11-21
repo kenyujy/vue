@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<link rel="stylesheet" href="../css/bootstrap.css">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+
+</head>
+<body>
+<div id="app">
+
+    <div class="panel panel-primary">
+        <div class="panel-heading">
+            <h3 class="panel-title">添加</h3>
+        </div>
+        <div class="panel-body form-inline">
+            <label>id
+                <input type="text" class="form-control" v-model="id">
+            </label>
+            <label>name
+                <input type="text" class="form-control" v-model="name">
+            </label>
+            <!-- vue中使用事件绑定机制，method()括号内可以传参数 -->
+            <input type="button" value="add" class="btn btn-primary" v-on:click="add()">
+
+            <label>搜索
+                <input type="text" class="form-control" v-model="keywords">
+            </label>
+        </div>
+    </div>
+
+    <table class="table table-bordered table-hover table-striped">
+        <thead>
+            <tr>
+                <th>id</th>
+                <th>name</th>
+                <th>create_time</th>
+                <th>operation</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr v-for="item in search(keywords)" v-bind:key="item.id">
+                <td>{{item.id}}</td>
+                <td>{{item.name}}</td>
+                <td>{{item.create_time | dateFormatter}}</td>
+                <td><a href="" >delete</a></td> <!-- 传递item.id 参数 -->
+            </tr>
+        </tbody>
+    </table>
+
+    <p>{{msg| stringFormatter | stringFormatter2 }}</p> <!--//可以应用多个过滤器 -->
+</div>
+
+<script type="text/javascript" src="../js/vue.js" ></script>
+<script type="text/javascript">
+    Vue.filter('dateFormatter', function(data){  //全局filter必须在vue实例前声明
+        let dt= new Date(data);  //得到特定的时间\
+        let year= dt.getFullYear();
+        let month= dt.getMonth()+1;
+        let day= dt.getDate();
+        return year+'-'+month+'-'+day;
+    });
+
+    // 过滤器函数的第一个参数就是传入的数组, 敏感词替换器
+    Vue.filter('stringFormatter', function(data){
+        return data.replace(/共匪/g,'*');
+    });
+
+    Vue.filter('stringFormatter2', function(data){
+        return data.replace(/供/g,'*');
+    });
+
+    // 正则表达式表示/*/g全局匹配
+    new Vue({
+        el: '#app',
+        data: {
+            id:'',
+            name:'',
+            keywords:'',
+            msg:'供餐大哥共匪，供餐, 共匪垃圾',
+            list: [
+                {id:1, name:'longwall', create_time: new Date()},
+                {id:2, name:'redflag', create_time: new Date()}
+            ]
+        },
+        methods:{
+            add(){
+                let car={id:this.id, name:this.name, create_time: new Date()};
+                this.list.push(car);
+                this.id=this.name='';
+            },
+
+            search(keywords){
+                let newList=[];
+                this.list.forEach(item=>{
+                    if (item.name.includes(keywords)) {
+                        newList.push(item);
+                    }
+                });
+                return newList;
+            }
+        }
+    })
+</script>
+
+</body>
+</html>

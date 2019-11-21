@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+
+</head>
+<body>
+<div id="app">
+    <input type="text" v-model="message">
+    <p> {{message}}</p>
+    <button v-on:mouseover="show()">show</button> <!-- v-on 绑定事件触发操作，mouseover 事件鼠标停留在上面-->
+</div>
+<script type="text/javascript" src="js/vue.js" ></script>
+<script type="text/javascript">
+    new Vue({
+        el: '#app',
+        data: {
+            message: '一定成功'
+        },
+        methods:{
+            show: function(){
+                alert('hello')
+            }
+        }
+    })
+</script>
+</body>
+</html>
